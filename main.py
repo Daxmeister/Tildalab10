@@ -197,6 +197,8 @@ def weight(first_ruta):
     '''Använder sig av trödet med rutor för att räkna ut vikt.'''
     return horizontal_weight(first_ruta)
 
+
+
 def horizontal_weight(ruta):
     if ruta.next == None:
         if ruta.atom == "( )":
