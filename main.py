@@ -2,7 +2,7 @@
 
 from linkedQFile import LinkedQ
 from molgrafik import *
-
+from hashtable_atom import *
 #######################################################################################################################
 # Stödfunktioner
 #######################################################################################################################
@@ -34,6 +34,10 @@ class Ruta:
         self.num = num
         self.next = None
         self.down = None
+
+    def get_weight(self):
+        pass
+
 
 
 #######################################################################################################################
@@ -184,6 +188,18 @@ test_queue = enqueue_formel(test_string)
 print(read_number(test_queue))
 exit()'''
 
+
+#######################################################################################################################
+# Molekylvikt
+#######################################################################################################################
+def get_weight_from_atom(atom_name):
+    '''Input är en string med atomnamn, output är dess molekylvikt som int. Kollar en dictionary.'''
+    atom_dict = create_atom_dict()
+    return atom_dict[atom_name]
+
+def weight(mol):
+    '''Använder sig av trödet med rutor för att räkna ut vikt.'''
+    return ruta.vikt + ruta.next.vikt
 #######################################################################################################################
 # Run funktioner
 #######################################################################################################################
@@ -211,4 +227,3 @@ def main():
         print(kolla_molekyl(string_molekyl))
         string_molekyl = input()
 
-main()
