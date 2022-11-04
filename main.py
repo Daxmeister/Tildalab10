@@ -35,8 +35,9 @@ class Ruta:
         self.next = None
         self.down = None
 
-    def get_weight(self):
-        pass
+    def return_weight(self):
+        atom_dict = create_atom_dict()
+        return atom_dict[self.atom] * int(self.num)
 
 
 
@@ -192,14 +193,30 @@ exit()'''
 #######################################################################################################################
 # Molekylvikt
 #######################################################################################################################
-def get_weight_from_atom(atom_name):
-    '''Input är en string med atomnamn, output är dess molekylvikt som int. Kollar en dictionary.'''
-    atom_dict = create_atom_dict()
-    return atom_dict[atom_name]
-
-def weight(mol):
+def weight(first_ruta):
     '''Använder sig av trödet med rutor för att räkna ut vikt.'''
-    return ruta.vikt + ruta.next.vikt
+    return horizontal_weight(first_ruta)
+
+def horizontal_weight(ruta):
+    if ruta.next == None:
+        if ruta.atom == "( )":
+            return weight_ver(ruta)
+        else:
+            return ruta.return_weight()
+    else:
+        return horizontal_weight(ruta.next) + ruta.return_weight()
+
+def weight_ver(ruta):
+    return vertical_weight(ruta)
+
+def vertical_weight(ruta):
+    if ruta.down == None: # Om det inte finns något nedanför. Dvs. ingen parentes.
+        return weight(ruta)
+    else:  # Om det finns något nedanför. Dvs. vi har en parentes.
+        return vertical_weight(ruta.down) * int(ruta.num)
+
+
+
 #######################################################################################################################
 # Run funktioner
 #######################################################################################################################
@@ -213,7 +230,9 @@ def kolla_molekyl(molekylstring):
     number_open_paranthesis_global = 0
     try:
         mg = Molgrafik()
-        mg.show(read_formel(queue))  # Här ritar vi ut den.
+        first_ruta = read_formel(queue)
+        mg.show(first_ruta)  # Här ritar vi ut den.
+        print(weight(first_ruta))
         input("redo för nästa")
         return "Formeln är syntaktiskt korrekt"
     except Syntaxfel as fel:
@@ -227,3 +246,4 @@ def main():
         print(kolla_molekyl(string_molekyl))
         string_molekyl = input()
 
+main()
