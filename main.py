@@ -60,7 +60,7 @@ def read_molekyl(queue):
             if number_open_paranthesis_global == 0: # Har vi inga öppnade parenteser ska vi inte få slutparenteser.
                 raise Syntaxfel("Felaktig gruppstart vid radslutet ")
             else:
-                return  # Detta tar oss tillbaka till där vi kallades ifrån. Antingen kolla_molekyl eller
+                return mol # Detta tar oss tillbaka till där vi kallades ifrån. Antingen kolla_molekyl eller
                         # till read_group efter att en parentes har öppnats. Där kommer nästa steg att kolla siffror.
         mol.next = read_molekyl(queue)
     return mol
@@ -107,7 +107,7 @@ def read_group(queue):
         numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
         if queue.peek() not in numbers:
             raise Syntaxfel ("Saknad siffra vid radslutet ")
-        rutan.number = read_number(queue)
+        rutan.num = read_number(queue)
         return rutan
 
 
