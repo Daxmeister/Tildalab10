@@ -37,7 +37,11 @@ class Ruta:
 
     def return_weight(self):
         atom_dict = create_atom_dict()
-        return atom_dict[self.atom] * int(self.num)
+        if self.atom == "( )":
+            print(self.num)
+            return
+        else:
+            return atom_dict[self.atom] * int(self.num)
 
 
 
@@ -193,20 +197,35 @@ exit()'''
 #######################################################################################################################
 # Molekylvikt
 #######################################################################################################################
-def weight(first_ruta):
+def weight(first_ruta): # Horizontal approach
     '''Använder sig av trödet med rutor för att räkna ut vikt.'''
     return horizontal_weight(first_ruta)
 
 
-
 def horizontal_weight(ruta):
-    if ruta.next == None:
+    # Kollar om det finns ne till åt "höger" och går isåfall dit. Annars kollar den om den kan ta vikten rakt av och
+    # addera eller om den ör vid en parentes. Är det en parentes måste den jobba sig ned vertikalt.
+    if ruta.next == None:   # Vi är vid slutstationen.
         if ruta.atom == "( )":
-            return weight_ver(ruta)
+            print("A")
+            print(ruta.num)
+            return horizontal_weight(ruta.down) * int(ruta.num)
+
         else:
+            print("B")
             return ruta.return_weight()
-    else:
-        return horizontal_weight(ruta.next) + ruta.return_weight()
+
+    else:   # Vi är vid en mellanstation.
+        if ruta.down == None:
+            print("C")
+            return horizontal_weight(ruta.next) + ruta.return_weight()
+
+        # Detta betyder att vi är en parentes
+        else:
+            print("D")
+            return horizontal_weight(ruta.next) + horizontal_weight(ruta.down) * int(ruta.num)
+
+
 
 def weight_ver(ruta):
     return vertical_weight(ruta)
