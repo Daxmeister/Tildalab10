@@ -36,12 +36,9 @@ class Ruta:
         self.down = None
 
     def return_weight(self):
+        '''Returnerar atomens vikt multiplicerat med antaler av atomen.'''
         atom_dict = create_atom_dict()
-        if self.atom == "( )":
-            print(self.num)
-            return
-        else:
-            return atom_dict[self.atom] * int(self.num)
+        return atom_dict[self.atom] * int(self.num)
 
 
 
@@ -82,7 +79,6 @@ def read_group(queue):
     '''<group> ::= <atom> |<atom><num> | (<mol>) <num>'''
     # Skapa ruta
     rutan = Ruta()
-
 
     # Kollar först att vi startar gruppen med godkänd karaktär.
     first_character = queue.peek()
@@ -188,11 +184,6 @@ def read_number(queue):
         raise Syntaxfel("För litet tal vid radslutet ")
     return number_int
 
-'''test_string = "1"
-test_queue = enqueue_formel(test_string)
-print(read_number(test_queue))
-exit()'''
-
 
 #######################################################################################################################
 # Molekylvikt
@@ -203,38 +194,27 @@ def weight(first_ruta): # Horizontal approach
 
 
 def horizontal_weight(ruta):
-    # Kollar om det finns ne till åt "höger" och går isåfall dit. Annars kollar den om den kan ta vikten rakt av och
-    # addera eller om den ör vid en parentes. Är det en parentes måste den jobba sig ned vertikalt.
-    if ruta.next == None:   # Vi är vid slutstationen.
-        if ruta.atom == "( )":
-            print("A")
-            print(ruta.num)
-            return horizontal_weight(ruta.down) * int(ruta.num)
+    '''Rekursiv funktion som tar emot första rutan i ett molekyl-rut-träd och returnerar dess molekylvikt.'''
+    # 1. Kollar om det finns någon till höger.
+    # 1a. Om ja: Addera nuvarande rutas vikt till NÄSTA rutas vikt. (rekursivt) TVÅ SCENARION.
+    #       1aa. Nuvarande ruta är en atom: Addera atomvikten från nuvarande.
+    #       1ab. Nuvarande ruta är en parentes: Multipliera parentestalet med allt som kommer under parentesen.
+    # 1b. Om Nej: Returnera rutans vikt.
+    #       1ba. Nuvarande ruta är en atom: Addera atomvikten från nuvarande.
+    #       1bb. Nuvarande ruta är en parentes: Multipliera parentestalet med allt som kommer under parentesen.
 
-        else:
-            print("B")
+    if ruta.next == None:   # 1b
+        if ruta.atom == "( )":  # 1bb
+            return horizontal_weight(ruta.down) * int(ruta.num)
+        else:   # 1ba
             return ruta.return_weight()
 
-    else:   # Vi är vid en mellanstation.
-        if ruta.down == None:
-            print("C")
+    else:   # 1a
+        if ruta.down == None:   # 1aa
             return horizontal_weight(ruta.next) + ruta.return_weight()
-
-        # Detta betyder att vi är en parentes
-        else:
-            print("D")
+        else:   # 1ab
             return horizontal_weight(ruta.next) + horizontal_weight(ruta.down) * int(ruta.num)
 
-
-
-def weight_ver(ruta):
-    return vertical_weight(ruta)
-
-def vertical_weight(ruta):
-    if ruta.down == None: # Om det inte finns något nedanför. Dvs. ingen parentes.
-        return weight(ruta)
-    else:  # Om det finns något nedanför. Dvs. vi har en parentes.
-        return vertical_weight(ruta.down) * int(ruta.num)
 
 
 
